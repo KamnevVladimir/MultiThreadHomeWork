@@ -20,8 +20,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        exampleOne()
-//        exampleTwo()
+//        exampleOne()
+        exampleTwo()
     
     }
     
@@ -52,7 +52,12 @@ class ViewController: UIViewController {
     func exampleTwo() {
         print("a")
         DispatchQueue.main.async {
-            DispatchQueue.main.sync {
+            // Deadlock - взаимная блокировка
+            // В главном очереди вызывается задача синхронно
+            // Это означает, что очередь DispatchQueue.main.sync ожидает конца выполнения всей программы, чтобы потом вызвать задачу
+            // Программа при этом не может выполниться до конца, так как у нее в очереди синхронная задача
+            // В итоге, DispatchQueue.main.sync ожидает конца выполнения программы, и тут же сама программа пытается вызвать DispatchQueue.main.sync
+            DispatchQueue.main.async { // Решение проблемы - сделать DispatchQueue.main.sync синхронной
                 print("b")
             }
             print("c")
